@@ -1,0 +1,31 @@
+(() => {
+  const done = new WeakSet();
+  const lock = (f) => {
+    if (!f || typeof f !== 'object' || done.has(f)) return;
+    if (f.side === 0 && f.char && 'hp' in f && 'meter' in f) {
+      done.add(f);
+      for (const k of ['hp', 'meter']) {
+        Object.defineProperty(f, k, { get: () => 100, set: () => {}, configurable: true, enumerable: true });
+      }
+      console.log('🛡️ GOD MODE ON for', f.char.name);
+    }
+  };
+  const scan = (arr) => { try { for (let i = 0; i < arr.length && i < 20; i++) lock(arr[i]); } catch (e) {} };
+
+  // Catch fighters whenever the game loops over / builds arrays
+  for (const m of ['forEach','map','filter','find','some','every','reduce','push','includes','indexOf','findIndex','at']) {
+    const orig = Array.prototype[m];
+    Array.prototype[m] = function (...a) { scan(this); if (m === 'push') scan(a); return orig.apply(this, a); };
+  }
+  const iter = Array.prototype[Symbol.iterator];
+  Array.prototype[Symbol.iterator] = function () { scan(this); return iter.call(this); };
+
+  // Fallback: catch objects that get hp assigned in a constructor
+  Object.defineProperty(Object.prototype, 'hp', {
+    configurable: true,
+    set(v) { Object.defineProperty(this, 'hp', { value: v, writable: true, configurable: true, enumerable: true }); setTimeout(() => lock(this), 0); },
+    get() { return undefined; }
+  });
+
+  console.log('🪝 Hook ready. Start the fight.');
+})();
