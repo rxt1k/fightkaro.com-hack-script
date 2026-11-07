@@ -1,4 +1,5 @@
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d1cca313-2302-4453-8087-d9b3059c288c" />
+<img width="1920" height="1019" alt="image" src="https://github.com/user-attachments/assets/e0ec6508-6320-4f2c-866a-48c8b4429d9e" />
+
 
 # Game Script — README
 
